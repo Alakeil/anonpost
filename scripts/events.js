@@ -1,6 +1,8 @@
+/* Objects */
+const MutationObserver = window.MutationObserver || window.WebkitMutationObserver || window.NozMutationObserver;
 
-// FUNCTIONS //
 
+// Functions //
 // Displays the result of the message submission (successful or failed)
 function displaySubmitStatus(status) {
     var submitMsg, submitColor;
@@ -81,18 +83,41 @@ function displayMessages(posts) {
 // END OF FUNCTIONS //
 
 
-// EVENTS //
 
+// Event listeners //
 window.onload = () => {
+    /* Attatching a mutation observer to the navbar toggler */
+    const navbarTogglerObserver = new MutationObserver(event => {
+        var messages = document.getElementById('messages');
+        
+        if (!messages.classList.contains('messages-responsive')) {
+            messages.classList.add('messages-responsive');
+        } else {
+            messages.classList.remove('messages-responsive');
+        }
+    });
+
+    navbarTogglerObserver.observe(document.getElementById('navbarToggler'), {
+        attributes: true,
+        attributeFilted: ['class'],
+        childList: false,
+        characterData: false
+    });
+    /* */
+
+
+    // Sending request to the server in order to fetch the current posts from the database
     var xhttp = new XMLHttpRequest();
 
-
-    xhttp.open('GET', 'http://localhost/anonpost/requests.php?type=getMessages', true);
+    xhttp.open('GET', 'http://192.168.1.3/anonpost/requests.php?type=getMessages', true);
 
     xhttp.onreadystatechange = () => {
         if (xhttp.readyState === 4) {
+            // If request was successful, proceed to display the posts
             if (xhttp.status === 200) {
                 var posts = JSON.parse(xhttp.responseText);
+
+                // Display the posts
                 displayMessages(posts);
             } else {
                 // Do stuff if request fails.
@@ -103,24 +128,47 @@ window.onload = () => {
     xhttp.send(null);
 }
 
-document.getElementById('openPostWindow').addEventListener('click', () => {
-    document.getElementById('postWindow').style.display = 'block';
-});
 
-
-document.getElementById('closePostWindow').addEventListener('click', () => {
-    document.getElementById('postWindow').style.display = 'none';
-});
-
-
-document.getElementById('post').addEventListener('keyup', e => {
-    var text = e.target.value.replace(/\s/g, '');
-
-    if (text !== '' && text !== null) {
-        document.getElementById('submitPost').style.display = 'block';
+document.getElementById('postDropdownToggle').addEventListener('click', () => {
+    var messages = document.getElementById('messages');
+        
+    if (!messages.classList.contains('messages-responsive')) {
+        messages.classList.add('messages-responsive');
     } else {
-        document.getElementById('submitPost').style.display = 'none';
+        messages.classList.remove('messages-responsive');
     }
+
+    var postDropdownMenu = document.getElementById('postDropdownMenu');
+
+    if (!postDropdownMenu.classList.contains('dropdown-menu-responsive')) {
+        postDropdownMenu.classList.add('dropdown-menu-responsive');
+    } else {
+        postDropdownMenu.classList.remove('dropdown-menu-responsive');
+    }
+});
+
+
+document.getElementById('submitPostMobile').addEventListener('click', () => {
+    var data = 'message=' + document.getElementById('postMobile').value;
+    var xhttp = new XMLHttpRequest();
+
+    xhttp.open('POST', 'http://192.168.1.3/anonpost/requests.php', true);
+    xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+
+    xhttp.onreadystatechange = () => {
+        if (xhttp.readyState == 4) {
+            if (xhttp.status == 200) {
+                // Post submitted!
+                console.log('successful!');
+                displaySubmitStatus('success');
+            } else {
+                console.log('fail!');
+                displaySubmitStatus('fail');
+            }
+        }
+    };
+
+    xhttp.send(data);
 });
 
 
@@ -128,7 +176,7 @@ document.getElementById('submitPost').addEventListener('click', () => {
     var data = 'message=' + document.getElementById('post').value;
     var xhttp = new XMLHttpRequest();
 
-    xhttp.open('POST', 'http://localhost/anonpost/requests.php', true);
+    xhttp.open('POST', 'http://192.168.1.3/anonpost/requests.php', true);
     xhttp.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
 
     xhttp.onreadystatechange = () => {

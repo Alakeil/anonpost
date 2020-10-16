@@ -1,10 +1,11 @@
 <?php
-    $server = 'localhost';
+    $server = '192.168.1.3';
+    $port = '3306';
     $username = 'root';
     $password = 'iluvfantasyshitxdxd';
     $dbname = 'anonpost';
 
-    $dsn = "mysql:host=$server;dbname=$dbname;charset=utf8mb4;";
+    $dsn = "mysql:hostname=$server;dbname=$dbname;port=$port;charset=utf8mb4;";
 
     $options = [
         PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
