@@ -1,48 +1,53 @@
-/* Objects */
+/* Globals */
 const MutationObserver = window.MutationObserver || window.WebkitMutationObserver || window.NozMutationObserver;
-
+var messagesTimeout, dropdownToggleTimeout;
 
 // Functions //
 // Displays the result of the message submission (successful or failed)
-function displaySubmitStatus(status) {
-    var submitMsg, submitColor;
+function displaySubmitStatus(status, mode) {
+    var refreshTime;
 
-    if (status === 'success') {
-        submitMsg = 'Your secret message has been successfully submitted!';
-        submitColor = 'green';
-    } else if (status === 'fail') {
-        submitMsg = 'Your secret message failed to submit. <br> Please try again.';
-        submitColor = 'red';
-    } else {
-        alert('INVALID SUBMIT STATUS! CONTACT THE DEVELOPER!');
-        return;
-    }
-
-    document.getElementById('resultMsg').innerHTML = submitMsg;
-    document.getElementById('resultMsg').style.color = submitColor;
-
-    document.getElementById('postLabel').style.display = 'none';
-    document.getElementById('post').style.display = 'none';
-    document.getElementById('post').value = '';
-    document.getElementById('submitPost').style.display = 'none';
-
-    document.getElementById('resultMsg').style.display = 'block';
-
-    setTimeout(() => {
-        document.getElementById('closePostWindow').click();
-
-        document.getElementById('resultMsg').style.display = 'none';
-        document.getElementById('postLabel').style.display = 'block';
-        document.getElementById('post').style.display = 'block';
-
-        document.getElementById('post').style.marginLeft = '30%';
-        document.getElementById('post').style.marginTop = '-1.5%';
-        document.getElementById('submitPost').style.marginTop = '-0.5%';
+    // If the site is in desktop mode, hide all the content of the post window, and show the result of the submission
+    if (mode === 'desktop') {
+        var submitMsg, submitColor;
 
         if (status === 'success') {
-            location.reload();
+            submitMsg = 'Your secret message has been successfully submitted!';
+            submitColor = 'white';
+        } else if (status === 'fail') {
+            submitMsg = 'Your secret message failed to submit. <br> Please try again.';
+            submitColor = 'black';
+        } else {
+            alert('INVALID SUBMIT STATUS! CONTACT THE DEVELOPER!');
+            return;
         }
-    }, 1000);
+
+        //
+        document.getElementById('resultMsg').innerHTML = submitMsg;
+        document.getElementById('resultMsg').style.color = submitColor;
+
+        document.getElementById('postLabel').style.display = 'none';
+        document.getElementById('post').style.display = 'none';
+        document.getElementById('post').value = '';
+        document.getElementById('submitPost').style.display = 'none';
+
+        document.getElementById('resultMsg').style.display = 'block';
+
+        setTimeout(() => {
+            document.getElementById('postDropdownToggle').click();
+        }, 1000);
+
+        refreshTime = 2000;
+    } else if (mode === 'mobile') {
+        document.getElementById('navbarToggler').click();
+
+        refreshTime = 1000;
+    }
+
+    setTimeout(() => {
+        if (status === 'success') 
+            location.reload();
+    }, refreshTime);
 }
 
 // Displays the anonymous messages fetched from the database
@@ -80,8 +85,7 @@ function displayMessages(posts) {
         document.getElementById('messages').appendChild(document.createElement('BR'));
     }
 }
-// END OF FUNCTIONS //
-
+// Functions End //
 
 
 // Event listeners //
@@ -128,25 +132,47 @@ window.onload = () => {
     xhttp.send(null);
 }
 
-
 document.getElementById('postDropdownToggle').addEventListener('click', () => {
     var messages = document.getElementById('messages');
-        
+    var postDropdownMenu = document.getElementById('postDropdownMenu');
+    var postDropdownToggle = document.getElementById('postDropdownToggle');
+
+    if (postDropdownToggle.firstElementChild.classList.contains('fa-arrow-left'))
+        postDropdownToggle.innerHTML = 'Close Submission Form&nbsp;<i class="fas fa-arrow-right"></i>';
+    else {
+        postDropdownToggle.innerHTML = '<i class="fas fa-arrow-left"></i>&nbsp;Open Submission Form';
+    }
+
+    // Animating the messages list
     if (!messages.classList.contains('messages-responsive')) {
         messages.classList.add('messages-responsive');
     } else {
-        messages.classList.remove('messages-responsive');
+        if (messagesTimeout)
+            clearTimeout(messagesTimeout);
+
+         messagesTimeout = setTimeout(() => {
+            messages.classList.remove('messages-responsive');
+         }, 300);
     }
 
-    var postDropdownMenu = document.getElementById('postDropdownMenu');
-
+    // Animating the dropdown menu
     if (!postDropdownMenu.classList.contains('dropdown-menu-responsive')) {
         postDropdownMenu.classList.add('dropdown-menu-responsive');
     } else {
         postDropdownMenu.classList.remove('dropdown-menu-responsive');
     }
-});
 
+    // Make the dropdown toggle unclickable for a few miliseconds
+    postDropdownToggle.classList.add('inactive');
+    
+
+    if (dropdownToggleTimeout)
+        clearTimeout(dropdownToggleTimeout);
+
+    dropdownToggleTimeout = setTimeout(() => {
+        postDropdownToggle.classList.remove('inactive');
+    }, 500);
+});
 
 document.getElementById('submitPostMobile').addEventListener('click', () => {
     var data = 'message=' + document.getElementById('postMobile').value;
@@ -160,17 +186,16 @@ document.getElementById('submitPostMobile').addEventListener('click', () => {
             if (xhttp.status == 200) {
                 // Post submitted!
                 console.log('successful!');
-                displaySubmitStatus('success');
+                displaySubmitStatus('success', 'mobile');
             } else {
                 console.log('fail!');
-                displaySubmitStatus('fail');
+                displaySubmitStatus('fail', 'mobile');
             }
         }
     };
 
     xhttp.send(data);
 });
-
 
 document.getElementById('submitPost').addEventListener('click', () => {
     var data = 'message=' + document.getElementById('post').value;
@@ -183,16 +208,13 @@ document.getElementById('submitPost').addEventListener('click', () => {
         if (xhttp.readyState == 4) {
             if (xhttp.status == 200) {
                 // Post submitted!
-                console.log('successful!');
-                displaySubmitStatus('success');
+                displaySubmitStatus('success', 'desktop');
             } else {
-                console.log('fail!');
-                displaySubmitStatus('fail');
+                displaySubmitStatus('fail', 'desktop');
             }
         }
     };
 
     xhttp.send(data);
 });
-
-// END OF EVENTS //
+// Event listeners End //

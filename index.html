@@ -2,7 +2,7 @@
     <head>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css" integrity="sha512-+4zCK9k+qNFUR5X+cKL9EIR+ZOhtIloNl9GIKS57V1MyNsYpYcUrUeQc9vNfzsWfV28IaLL3i96P9sdNyeRssA==" crossorigin="anonymous" />        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
         <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
         <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
@@ -12,7 +12,7 @@
     <body>
         <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
             <a class="navbar-brand">
-                Welcome to AnonPost!
+                Welcome to AnonPostings!
             </a>
 
             <button class="navbar-toggler" id="navbarToggler" type="button" style="border-color: white;" data-toggle="collapse" data-target="#navbarContent" aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -36,29 +36,31 @@
                     </li>
 
                     <!-- Post window for some tablets, laptops and PCs -->
-                    <li class="nav-item dropdown" id="postWindowDropdown">
-                        <a class="nav-link dropdown-toggle rounded border border-primary" id="postDropdownToggle" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Submit a post anonymously!
+                    <li class="nav-item" id="postWindowDropdown">
+                        <a class="nav-link rounded border border-primary" id="postDropdownToggle" href="#" role="button">
+                            <i class="fas fa-arrow-left"></i>&nbsp;Open Submission Form
                         </a>
-                        <div class="dropdown-menu" id="postDropdownMenu" aria-labelledby="postDropdownToggle">
-                            <div id="postWindow">
-                                <label id="postLabel" for="post">
-                                    Write your secret message:
-                                </label>
-                                <br>
-                                <textarea id="post" rows="3"></textarea>
-                
-                                <br> 
-                
-                                <button id="submitPost" class="rounded border border-primary">Post</button>
-                                <p id='resultMsg' style='font-weight: bold; font-size: 200%; display: none;'></p>
-                            </div>
-                        </div>
+                        
                         <!-- <button type="button" id="openPostWindow" class="rounded border border-primary nav-link">Submit a post anonymously!</button> -->
                     </li>
                 </ul>
             </div>
         </nav>
+
+        <div id="postDropdownMenu" class="rounded">
+            <div id="postWindow">
+                <label id="postLabel" for="post">
+                    Write your secret message:
+                </label>
+                <br>
+                <textarea id="post" rows="3"></textarea>
+
+                <br> 
+
+                <button id="submitPost" class="rounded border border-primary">Post</button>
+                <p id='resultMsg' style='font-weight: bold; font-size: 200%; display: none;'></p>
+            </div>
+        </div>
 
         <div id="messages">
         </div>

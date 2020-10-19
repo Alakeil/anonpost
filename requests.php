@@ -26,8 +26,7 @@
             $message = $_POST["message"];
 
             if ($message !== null && $message !== '') {
-               
-                // After a successful connection to the database, store the message
+                    // After a successful connection to the database, store the message
                 $sql = "INSERT INTO posts (message, datetime) VALUES (?, now())";
 
                 $query = $pdo->prepare($sql);
@@ -35,7 +34,6 @@
 
                 // After the message is stored in the database, return status code 200
                 http_response_code(200);
-                
             } else {
                 http_response_code(400);
             }
@@ -53,7 +51,7 @@
                 $postArray = array();
                 while ($post = $query->fetch()) {
                     $postArray[$postNum] = array(
-                        "message" => $post["message"],
+                        "message" => htmlspecialchars($post["message"]),
                         "date" => $post["datetime"]
                     );
 
